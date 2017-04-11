@@ -99,7 +99,11 @@ class SalesDB(object):
 			other_contact_info TEXT,
 			funnel_state INTEGER NOT NULL,
 			notes TEXT,
-			value REAL
+			value REAL,
+			active_campaigns TEXT,
+			previous_campaigns TEXT,
+			last_contacted INTEGER,
+			has_responded INTEGER
 		)''')
 
 		self.c.execute('''CREATE TABLE IF NOT EXISTS campaign_personalization (
