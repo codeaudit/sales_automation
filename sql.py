@@ -11,13 +11,77 @@ class SalesDB(object):
 		self.conn.row_factory = lambda c, r: dict([(col[0], r[idx]) for idx, col in enumerate(c.description)])
 		self.c = self.conn.cursor()
 
-
 	def save(self):
 		self.conn.commit()
 
 	def close(self):
 		self.conn.close()
 
+	def add_target(self, first_name, last_name, email, other_contact_info, notes, multiple=False):
+		now = time.time()
+		self.c.execute("INSERT INTO targets VALUES (NULL,?,?,?,?,?,?,?,?,?)", (now, now, first_name, last_name, email, other_contact_info, 0, notes, 0.00))
+		if not multiple:
+			self.save()
+
+		return self.c.lastrowid
+
+	def add_campaign_personalization(self, target_id, campaign_id, parameters, multiple=False):
+		self.c.execute("INSERT INTO campaign_personalization VALUES (NULL,?,?,?)", (target_id, campaign_id, json.dumps(parameters)))
+		if not multiple:
+			self.save()
+
+		return self.c.lastrowid	
+
+	def add_campaign(self, name, description, targets, notes, target_params):
+		now = time.time()
+		self.c.execute("INSERT INTO campaigns VALUES (NULL,?,?,?,?,?,?,?,?,?, ?, ?, ?, ?)", (now, now, name, description, None, None, targets, None, 0, 0.00, 0.00, notes, 0.00))
+		self.save()
+
+		return self.c.lastrowid
+
+	def add_message(self, message_id, thread_id, campaign_id, sent, recipient, sender, subject, body):
+		self.c.execute("INSERT INTO messages VALUES (NULL,?,?,?,?,?,?,?,?,?,?)", (message_id, thread_id, campaign_id, 0, sent, recipient, sender, subject, body, None))
+		self.save()
+
+		return self.c.lastrowid
+
+	def add_template(self, campaign_id, subject, body, attachments):
+		now = time.time()
+		self.c.execute("INSERT INTO templates VALUES (NULL,?,?,?,?,?,?)", (now, now, campaign_id, subject, body, attachments))
+		self.save()
+
+		return self.c.lastrowid
+
+	def get_template(self, campaign_id):
+		self.c.execute("SELECT * FROM templates WHERE campaign_id = ?", (campaign_id,))
+		template = self.c.fetchone()
+		return template
+
+	def get_target(self, target_id):
+		self.c.execute("SELECT * FROM targets WHERE id = ?", (target_id,))
+		target_row = self.c.fetchone()
+		return target_row
+
+	def get_target_personalization(self, target_id, campaign_id):
+		self.c.execute("SELECT * FROM campaign_personalization WHERE target_id = ? AND campaign_id = ?", (target_id, campaign_id))
+		campaign_personalization_row = json.loads(self.c.fetchone()['parameters'])
+
+		return campaign_personalization_row
+
+	def set_message_status(self, message_id, status):
+		"""
+		status
+			0 DRAFT
+			1 SENT
+			2 INACTIVE
+		"""
+		self.c.execute("UPDATE messages SET status = ? WHERE message_id = ?", (status, message_id))
+		self.save()
+		
+	def set_message_thread(self, message_id, thread_id):
+		self.c.execute("UPDATE messages SET thread_id = ? WHERE message_id = ?", (thread_id, message_id))
+		self.save()
+	
 	def setup_tables(self):
 		self.c.execute('''CREATE TABLE IF NOT EXISTS targets (
 			id INTEGER PRIMARY KEY AUTOINCREMENT, 
@@ -101,67 +165,3 @@ class SalesDB(object):
 			    FOREIGN KEY (most_valuable_target) REFERENCES targets(id)
 		)''')
 
-	def add_target(self, first_name, last_name, email, other_contact_info, notes, multiple=False):
-		now = time.time()
-		self.c.execute("INSERT INTO targets VALUES (NULL,?,?,?,?,?,?,?,?,?)", (now, now, first_name, last_name, email, other_contact_info, 0, notes, 0.00))
-		if not multiple:
-			self.save()
-
-		return self.c.lastrowid
-
-	def add_campaign_personalization(self, target_id, campaign_id, parameters, multiple=False):
-		self.c.execute("INSERT INTO campaign_personalization VALUES (NULL,?,?,?)", (target_id, campaign_id, json.dumps(parameters)))
-		if not multiple:
-			self.save()
-
-		return self.c.lastrowid	
-
-	def add_campaign(self, name, description, targets, notes, target_params):
-		now = time.time()
-		self.c.execute("INSERT INTO campaigns VALUES (NULL,?,?,?,?,?,?,?,?,?, ?, ?, ?, ?)", (now, now, name, description, None, None, targets, None, 0, 0.00, 0.00, notes, 0.00))
-		self.save()
-
-		return self.c.lastrowid
-
-	def add_message(self, message_id, thread_id, campaign_id, sent, recipient, sender, subject, body):
-		self.c.execute("INSERT INTO messages VALUES (NULL,?,?,?,?,?,?,?,?,?,?)", (message_id, thread_id, campaign_id, 0, sent, recipient, sender, subject, body, None))
-		self.save()
-
-		return self.c.lastrowid
-
-	def add_template(self, campaign_id, subject, body, attachments):
-		now = time.time()
-		self.c.execute("INSERT INTO templates VALUES (NULL,?,?,?,?,?,?)", (now, now, campaign_id, subject, body, attachments))
-		self.save()
-
-		return self.c.lastrowid
-
-	def get_template(self, campaign_id):
-		self.c.execute("SELECT * FROM templates WHERE campaign_id = ?", (campaign_id,))
-		template = self.c.fetchone()
-		return template
-
-	def get_target(self, target_id):
-		self.c.execute("SELECT * FROM targets WHERE id = ?", (target_id,))
-		target_row = self.c.fetchone()
-		return target_row
-
-	def get_target_personalization(self, target_id, campaign_id):
-		self.c.execute("SELECT * FROM campaign_personalization WHERE target_id = ? AND campaign_id = ?", (target_id, campaign_id))
-		campaign_personalization_row = json.loads(self.c.fetchone()['parameters'])
-
-		return campaign_personalization_row
-
-	def set_message_status(self, message_id, status):
-		"""
-		status
-			0 DRAFT
-			1 SENT
-			2 INACTIVE
-		"""
-		self.c.execute("UPDATE messages SET status = ? WHERE id = ?", (status, message_id))
-		self.save()
-
-	def set_message_thread(self, message_id, thread_id):
-		self.c.execute("UPDATE messages SET thread_id = ? WHERE id = ?", (thread_id, message_id))
-		self.save()

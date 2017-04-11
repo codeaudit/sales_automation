@@ -13,7 +13,6 @@ class Postman(object):
 		self.handle = sql.SalesDB()
 		self.handle.open()
 
-		self.sender_email = settings.SENDER_EMAIL
 
 	def create_draft(self, campaign_id, target_id, template_id):
 		template = self.handle.get_template(campaign_id)
@@ -29,6 +28,16 @@ class Postman(object):
 			'name': target_row['first_name'],
 			'email': target_row['email']
 		}]
+
+		draft.cc = [{
+			'name': settings.CC_NAME,
+			'email': settings.CC_EMAIL
+		}]
+
+		draft.bcc = [{
+			'name': 'salesforceIQ',
+			'email': settings.SALESFORCEIQ_EMAIL
+		}]
 		
 		draft.subject = subject_template.substitute(target_personalization_row)
 		draft.body = body_template.substitute({**target_row, **target_personalization_row})
@@ -42,7 +51,7 @@ class Postman(object):
 		utils.print_pretty(draft.body)
 		print(' ')
 
-		self.handle.add_message(draft.id, None, campaign_id, None, draft.to[0]['email'], self.sender_email, draft.subject, draft.body)
+		self.handle.add_message(draft.id, None, campaign_id, None, draft.to[0]['email'], settings.SENDER_EMAIL, draft.subject, draft.body)
 
 	def send_draft(self, message_id):
 		utils.print_magenta('Send draft')

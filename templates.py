@@ -20,4 +20,6 @@ class InsideSalesTemplates(object):
 
 		return template_id
 
-	def list_templates(self):
+
+
+# def list_templates(self):
