@@ -15,11 +15,11 @@ class InsideSalesTemplates(object):
 		stream = open(yaml_file, 'r')
 		yaml_dict = yaml.load(stream)
 		stream.close()
-		body = yaml_dict['body'].replace("\n", "<br/>")
+		body = yaml_dict['body'].replace("\n", "<br /><br />")
 		template_id = self.h.add_template(campaign_id, yaml_dict['subject'], body, None)		
 
 		return template_id
 
 
-
 # def list_templates(self):
+# def modify_template(self)
