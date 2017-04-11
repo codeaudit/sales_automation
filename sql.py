@@ -52,8 +52,8 @@ class SalesDB(object):
 
 		return self.c.lastrowid
 
-	def get_template(self, campaign_id):
-		self.c.execute("SELECT * FROM templates WHERE campaign_id = ?", (campaign_id,))
+	def get_template(self, template_id):
+		self.c.execute("SELECT * FROM templates WHERE id = ?", (template_id,))
 		template = self.c.fetchone()
 		return template
 
@@ -61,6 +61,12 @@ class SalesDB(object):
 		self.c.execute("SELECT * FROM targets WHERE id = ?", (target_id,))
 		target_row = self.c.fetchone()
 		return target_row
+
+	def get_target_list(self, campaign_id):
+		## FIXME PLEASE PLEASE PLEASE
+
+		self.c.execute("SELECT id FROM targets")
+		return self.c.fetchall()
 
 	def get_target_personalization(self, target_id, campaign_id):
 		self.c.execute("SELECT * FROM campaign_personalization WHERE target_id = ? AND campaign_id = ?", (target_id, campaign_id))
@@ -77,11 +83,11 @@ class SalesDB(object):
 		"""
 		self.c.execute("UPDATE messages SET status = ? WHERE message_id = ?", (status, message_id))
 		self.save()
-		
+
 	def set_message_thread(self, message_id, thread_id):
 		self.c.execute("UPDATE messages SET thread_id = ? WHERE message_id = ?", (thread_id, message_id))
 		self.save()
-	
+
 	def setup_tables(self):
 		self.c.execute('''CREATE TABLE IF NOT EXISTS targets (
 			id INTEGER PRIMARY KEY AUTOINCREMENT, 
