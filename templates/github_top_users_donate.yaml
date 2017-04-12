@@ -1,5 +1,10 @@
 title: github_top_users_donate
 subject: "Monetize support for $github_project_name work with 21.co?"
+personalizations:
+  - github_project_name
+  - first_name
+  - alternate_dev_name
+  - alternate_dev_21_profile
 body: "Hi $first_name,
   
   We’ve built a free product that enables you to monetize support requests for $github_project_name (and all your other repos). The basic idea is that you can set up a profile at 21.co and use it to generate revenue for feature requests and support inquiries. Other prominent developers like $alternate_dev_name have already started experimenting with this — see 21.co/$alternate_dev_21_profile.

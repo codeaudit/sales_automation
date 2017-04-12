@@ -1,16 +1,2 @@
 title: github_top_users
-subject: "Monetize support for $github_project_name work with 21.co?"
-body:
-  "Hi $first_name,
-
-  My name is Balaji Srinivasan, CEO of 21. We’ve built a free product that enables you to monetize support requests for $github_project_name (and all your other repos). The basic idea is that you can set up a profile at 21.co and use it to generate revenue for feature requests and support inquiries. Other prominent developers like $alternate_dev_name have already started experimenting with this — see 21.co/$alternate_dev_21_profile.
-
-  Please let us know if you have any feedback or feature requests. We'll be happy to assist you in setting up your a 21.co profile.
-
-  More info here:
-  https://medium.com/@21/get-paid-to-read-email-from-outside-your-network-with-a-21-profile-8a388548a9ef
-
-  --
-  Balaji S. Srinivasan, PhD
-  CEO and Cofounder, 21
-  Board Partner, Andreessen Horowitz"
+description: Target open source repo maintainers by popularity

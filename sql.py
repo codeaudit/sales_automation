@@ -32,7 +32,7 @@ class SalesDB(object):
 
 		return self.c.lastrowid	
 
-	def add_campaign(self, name, description, targets, notes, target_params):
+	def add_campaign(self, name, description, targets, notes):
 		now = time.time()
 		self.c.execute("INSERT INTO campaigns VALUES (NULL,?,?,?,?,?,?,?,?,?, ?, ?, ?, ?)", (now, now, name, description, None, None, targets, None, 0, 0.00, 0.00, notes, 0.00))
 		self.save()
@@ -51,6 +51,15 @@ class SalesDB(object):
 		self.save()
 
 		return self.c.lastrowid
+		
+	# FIXME
+	# def edit_template(self, template_id, subject, body, attachments):
+	# 	now = time.time()
+
+	# 	self.c.execute("UPDATE templates WHERE templates.id = ? VALUES (NULL,?,?,?,?,?,?)", (template_id, now, now, campaign_id, subject, body, attachments))
+	# 	self.save()
+
+	# 	return self.c.lastrowid
 
 	def get_template(self, template_id):
 		self.c.execute("SELECT * FROM templates WHERE id = ?", (template_id,))
