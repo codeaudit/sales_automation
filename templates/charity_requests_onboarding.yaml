@@ -1,12 +1,17 @@
 title: charity_requests_onboarding
 subject: "Allow us to raise money for $charity_name @ 21.co?"
+personalizations:
+  - charity_name
+  - first_name
+  - alt_charity_name
+  - alt_charity_name_2
 body: "Hi $first_name,
   
-  Several of our users requested that we add your charity to 21 Charities. Our users are raising money for $alt_charity_name and $alt_charity_name_2 right now.
+  Our users requested that we add $charity_name to 21 Charities. We are raising money for $alt_charity_name and $alt_charity_name_2 right now. 
 
-  Users earn funds on our 
+  Users earn funds by answering paid messages and completing tasks. They can cash out earnings or contribute to a charity of their choice.
   
-  If you'd like to receive money from donors on 21, just sign up here for a 21.co account and we'll take care of the rest.
+  If you'd like to receive money from donors on 21, just sign up <a href="https://21.co/signup/">here</a> for a 21 account and we'll take care of the rest.
 
   If you have any questions, please let me know!
   
